@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>منصة الإتقان الذكي</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{margin:0;font-family:Arial;background:#eef3ef}
+.dark{background:#1e1e1e;color:#fff}
+.header{background:linear-gradient(135deg,#1e7c45,#2f855a);color:#fff;padding:20px;text-align:center}
+.menu{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:10px}
+.btn{background:#ffffff22;color:#fff;padding:8px 12px;border-radius:20px;cursor:pointer}
+.container{padding:15px}
+.section{display:none}
+.active{display:block}
+.box{background:#fff;padding:15px;border-radius:12px;margin-bottom:10px}
+.dark .box{background:#2a2a2a}
+input,select,textarea{width:100%;padding:8px;margin-top:5px}
+.skill{background:#ddd;padding:5px;margin:3px;border-radius:5px;cursor:pointer}
+.small{font-size:12px;opacity:.8}
+.tag{display:inline-block;background:#e6f4ea;color:#1e7c45;padding:3px 8px;border-radius:12px;margin:2px}
+.dark .tag{background:#224a32;color:#cdebd8}
+a{color:#1e7c45}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h2>منصة الإتقان الذكي ✔</h2>
+<div class="menu">
+<span class="btn" onclick="go('home')">الرئيسية</span>
+<span class="btn" onclick="go('data')">البيانات</span>
+<span class="btn" onclick="go('skills')">المهارات</span>
+<span class="btn" onclick="go('classes')">الفصول</span>
+<span class="btn" onclick="go('grades')">الدرجات</span>
+<span class="btn" onclick="go('report')">التقارير</span>
+<span class="btn" onclick="go('games')">الألعاب</span>
+<span class="btn" onclick="go('sources')">المصادر</span>
+<span class="btn" onclick="go('archive')">الأرشيف</span>
+<span class="btn" onclick="toggleMode()">🌙</span>
+</div>
+</div>
+
+<div class="container">
+
+<!-- الرئيسية -->
+<div id="home" class="section active">
+<div class="box">
+<h3>لوحة التحكم</h3>
+<p class="small">1) أضيفي الفصل → 2) أضيفي الطالبات جماعي → 3) أدخلي الدرجات → 4) التقرير</p>
+</div>
+</div>
+
+<!-- البيانات -->
+<div id="data" class="section">
+<div class="box">
+<h3>📌 البيانات الأساسية</h3>
+<input id="subjectName" placeholder="اسم المادة">
+<input id="teacherName" placeholder="اسم المعلمة">
+<input id="schoolName" placeholder="اسم المدرسة">
+
+<label class="btn">
+📄 رفع المنهج PDF
+<input type="file" accept="application/pdf" onchange="processPDF(this)" hidden>
+</label>
+
+<div id="skillsList"></div>
+</div>
+</div>
+
+<!-- المهارات -->
+<div id="skills" class="section">
+<div class="box">
+<h3>🎯 الوحدات (7)</h3>
+<select id="unitSelect" onchange="renderSkills()">
+<option>الوحدة 1</option>
+<option>الوحدة 2</option>
+<option>الوحدة 3</option>
+<option>الوحدة 4</option>
+<option>الوحدة 5</option>
+<option>الوحدة 6</option>
+<option>الوحدة 7</option>
+</select>
+
+<div id="unitSkills"></div>
+</div>
+</div>
+
+<!-- الفصول -->
+<div id="classes" class="section">
+<div class="box">
+<h3>📚 إضافة فصل</h3>
+<input id="className">
+<button onclick="addClass()">إضافة</button>
+<div id="classList"></div>
+</div>
+
+<div class="box">
+<h3>👩‍🎓 إدخال طالبات جماعي</h3>
+<select id="classSelect"></select>
+<textarea id="studentsBulk" placeholder="كل اسم بسطر"></textarea>
+<button onclick="addStudents()">حفظ</button>
+</div>
+</div>
+
+<!-- الدرجات -->
+<div id="grades" class="section">
+<div class="box">
+<select id="studentSelect"></select>
+<select id="period">
+<option value="1">الفترة 1</option>
+<option value="2">الفترة 2</option>
+</select>
+<input id="score" placeholder="الدرجة">
+<button onclick="saveGrade()">حفظ</button>
+</div>
+</div>
+
+<!-- التقرير -->
+<div id="report" class="section">
+<div class="box">
+<canvas id="chart"></canvas>
+<div id="analysis"></div>
+<button onclick="print()">🖨️ طباعة</button>
+<button onclick="exportWord()">📄 Word</button>
+</div>
+</div>
+
+<!-- الألعاب -->
+<div id="games" class="section">
+<div class="box">
+<h3>🎮 ألعاب تعليمية</h3>
+<div id="gamesList"></div>
+</div>
+</div>
+
+<!-- المصادر -->
+<div id="sources" class="section">
+<div class="box">
+<h3>🌐 مصادر</h3>
+<a href="https://wordwall.net/" target="_blank">Wordwall</a><br>
+<a href="https://quizizz.com/" target="_blank">Quizizz</a><br>
+<a href="https://kahoot.com/" target="_blank">Kahoot</a><br>
+</div>
+</div>
+
+<!-- الأرشيف -->
+<div id="archive" class="section">
+<div class="box">
+<button onclick="saveArchive()">حفظ نسخة</button>
+<div id="archiveList"></div>
+</div>
+</div>
+
+</div>
+
+<script>
+
+// تنقل
+function go(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+// وضع ليلي
+function toggleMode(){document.body.classList.toggle("dark")}
+
+// حفظ البيانات
+["subjectName","teacherName","schoolName"].forEach(id=>{
+let el=document.getElementById(id);
+let val=localStorage.getItem(id);
+if(val) el.value=val;
+el.oninput=()=>localStorage.setItem(id,el.value);
+});
+
+// ===== PDF استخراج =====
+let skills = JSON.parse(localStorage.getItem("skills")||"[]");
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+async function processPDF(input){
+let file=input.files[0];
+if(!file)return;
+
+let reader=new FileReader();
+reader.onload=async function(){
+let pdf=await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
+let arr=[];
+for(let i=1;i<=pdf.numPages;i++){
+let p=await pdf.getPage(i);
+let t=await p.getTextContent();
+let text=t.items.map(s=>s.str).join(" ");
+let m=text.match(/(أن\s\w+[^.]{10,50}|يميز\s[^.]{10,50}|يعدد\s[^.]{10,50})/g);
+if(m) arr.push(...m);
+}
+skills=[...new Set(arr)];
+localStorage.setItem("skills",JSON.stringify(skills));
+renderSkills();
+};
+reader.readAsArrayBuffer(file);
+}
+
+// ===== الوحدات =====
+function renderSkills(){
+let u=document.getElementById("unitSelect").value;
+document.getElementById("unitSkills").innerHTML =
+skills.map((s,i)=>`
+<div class="skill">
+${s}
+<button onclick="editSkill(${i})">✏️</button>
+<button onclick="deleteSkill(${i})">❌</button>
+<button onclick="generateGame('${s}')">🎮</button>
+</div>
+`).join("");
+}
+
+function deleteSkill(i){
+skills.splice(i,1);
+localStorage.setItem("skills",JSON.stringify(skills));
+renderSkills();
+}
+
+function editSkill(i){
+let n=prompt("تعديل",skills[i]);
+if(n){skills[i]=n;localStorage.setItem("skills",JSON.stringify(skills));renderSkills();}
+}
+
+// ===== فصول =====
+let classes=JSON.parse(localStorage.getItem("classes")||"[]");
+let students=JSON.parse(localStorage.getItem("students")||"[]");
+
+function addClass(){
+let n=document.getElementById("className").value;
+classes.push(n);
+localStorage.setItem("classes",JSON.stringify(classes));
+render();
+}
+
+function addStudents(){
+let cls=document.getElementById("classSelect").value;
+let list=document.getElementById("studentsBulk").value.split("\n");
+list.forEach(n=>students.push({name:n,class:cls}));
+localStorage.setItem("students",JSON.stringify(students));
+render();
+}
+
+// ===== درجات =====
+let grades=JSON.parse(localStorage.getItem("grades")||"[]");
+
+function saveGrade(){
+let s=document.getElementById("studentSelect").value;
+let sc=parseFloat(document.getElementById("score").value);
+let p=document.getElementById("period").value;
+grades.push({s,sc,p});
+localStorage.setItem("grades",JSON.stringify(grades));
+updateReport();
+}
+
+// ===== تحليل + رسم =====
+let chart;
+
+function updateReport(){
+let g=grades.map(x=>x.sc);
+let avg=g.reduce((a,b)=>a+b,0)/(g.length||1);
+
+let level = avg>=85?"فوق المتوسط": avg>=60?"ضمن المتوسط":"دون المتوسط";
+
+document.getElementById("analysis").innerHTML=
+`المتوسط: ${avg.toFixed(1)}<br>${level}<br>${plan(level)}`;
+
+if(chart) chart.destroy();
+
+chart=new Chart(document.getElementById("chart"),{
+type:'bar',
+data:{labels:["المتوسط"],datasets:[{data:[avg]}]}
+});
+}
+
+// ===== خطط =====
+function plan(level){
+if(level=="دون المتوسط") return "خطة علاجية: مراجعة + تمارين إضافية";
+if(level=="ضمن المتوسط") return "تعزيز: تدريبات تطبيقية";
+return "إثراء: أنشطة متقدمة";
+}
+
+// ===== ألعاب =====
+let gameLinks=[
+"https://wordwall.net/",
+"https://quizizz.com/",
+"https://kahoot.com/"
+];
+
+function generateGame(skill){
+let link=gameLinks[Math.floor(Math.random()*gameLinks.length)];
+document.getElementById("gamesList").innerHTML+=
+`<div class="tag">${skill} - <a href="${link}" target="_blank">فتح</a></div>`;
+}
+
+// ===== أرشيف =====
+function saveArchive(){
+let a=JSON.parse(localStorage.getItem("archive")||"[]");
+a.push(new Date().toLocaleString());
+localStorage.setItem("archive",JSON.stringify(a));
+renderArchive();
+}
+
+function renderArchive(){
+let a=JSON.parse(localStorage.getItem("archive")||"[]");
+document.getElementById("archiveList").innerHTML=a.map(x=>"<div>"+x+"</div>").join("");
+}
+
+// ===== Word =====
+function exportWord(){
+let c=document.getElementById("analysis").innerHTML;
+let blob=new Blob([c],{type:"application/msword"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="report.doc";
+a.click();
+}
+
+// ===== render =====
+function render(){
+document.getElementById("classList").innerHTML=classes.map(c=>"<div>"+c+"</div>").join("");
+document.getElementById("classSelect").innerHTML=classes.map(c=>"<option>"+c+"</option>").join("");
+document.getElementById("studentSelect").innerHTML=students.map(s=>"<option>"+s.name+"</option>").join("");
+renderArchive();
+}
+
+render();
+updateReport();
+
+</script>
+
+</body>
+</html>
