@@ -5,259 +5,252 @@
 <title>منصة الإتقان الذكي</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
 <style>
 body{margin:0;font-family:Arial;background:#eef3ef}
 .dark{background:#1e1e1e;color:#fff}
-
-.header{
-background:#2f6f44;
-color:#fff;
-padding:20px;
-text-align:center;
-}
-
-.menu{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:8px;
-}
-
-.btn{
-background:#ffffff22;
-color:#fff;
-padding:8px 12px;
-border-radius:20px;
-cursor:pointer;
-font-size:13px;
-}
-
-.container{padding:15px}
-
-.section{display:none}
+.header{background:#2f6f44;color:#fff;padding:15px;text-align:center}
+.menu{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.btn{background:#ffffff22;padding:6px 10px;border-radius:15px;cursor:pointer}
+.section{display:none;padding:15px}
 .active{display:block}
-
-.box{
-background:#fff;
-padding:15px;
-border-radius:15px;
-margin-bottom:10px;
-}
-
+.box{background:#fff;padding:10px;border-radius:10px;margin-bottom:10px}
 .dark .box{background:#2a2a2a}
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-.card{
-background:#e9eeec;
-padding:15px;
-border-radius:12px;
-text-align:center;
-}
-
-input,textarea{
-width:100%;
-padding:8px;
-margin-top:5px;
-}
-
-button{
-background:#2f6f44;
-color:#fff;
-border:none;
-padding:8px;
-margin-top:5px;
-border-radius:10px;
-}
-
+input,textarea,select{width:100%;padding:8px;margin-top:5px}
+button{padding:8px;background:#2f6f44;color:#fff;border:none;margin-top:5px}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-<h2>منصة الإتقان الذكي ✔</h2>
-
+<h3>منصة الإتقان الذكي ✔</h3>
 <div class="menu">
 <div class="btn" onclick="go('home')">الرئيسية</div>
-<div class="btn" onclick="go('classes')">الفصول/الطالبات</div>
-<div class="btn" onclick="go('grades')">الدرجات</div>
-<div class="btn" onclick="go('report')">التقارير</div>
+<div class="btn" onclick="go('classes')">الفصول</div>
+<div class="btn" onclick="go('students')">الطالبات</div>
 <div class="btn" onclick="go('parents')">أولياء الأمور</div>
+<div class="btn" onclick="go('grades')">الدرجات</div>
+<div class="btn" onclick="go('analysis')">التحليل</div>
+<div class="btn" onclick="go('plans')">الخطط</div>
+<div class="btn" onclick="go('report')">التقارير</div>
+<div class="btn" onclick="go('honor')">التكريم</div>
+<div class="btn" onclick="go('archive')">الأرشيف</div>
 <div class="btn" onclick="go('games')">الألعاب</div>
 <div class="btn" onclick="go('sources')">المصادر</div>
-<div class="btn" onclick="toggleMode()">🌙</div>
+<div class="btn" onclick="toggle()">🌙</div>
 </div>
 </div>
-
-<div class="container">
 
 <!-- الرئيسية -->
 <div id="home" class="section active">
 <div class="box">
-✔ حفظ تلقائي
-<p>أضيفي فصل → طالبات → درجات → تقرير</p>
-</div>
+<input id="school" placeholder="المدرسة">
+<input id="teacher" placeholder="المعلمة">
+<input id="principal" placeholder="المديرة">
+<input id="subject" placeholder="المادة">
 
-<div class="grid">
-<div class="card" id="c_students">0<br>عدد الطالبات</div>
-<div class="card" id="c_classes">0<br>عدد الفصول</div>
-<div class="card" id="c_parents">0<br>أولياء الأمور</div>
-<div class="card">تحليل جاهز ✔</div>
+<label style="background:#2f6f44;color:#fff;padding:8px;display:block">
+رفع PDF
+<input type="file" accept="application/pdf" onchange="pdf(this)" hidden>
+</label>
+
+<div id="skills"></div>
 </div>
 </div>
 
 <!-- الفصول -->
 <div id="classes" class="section">
-<div class="box">
-<h3>الفصول</h3>
-<input id="className">
-<button onclick="addClass()">إضافة فصل</button>
+<input id="className" placeholder="اسم الفصل">
+<button onclick="addClass()">إضافة</button>
 <div id="classList"></div>
 </div>
 
-<div class="box">
-<h3>الطالبات (جماعي)</h3>
-<textarea id="studentsText"></textarea>
-<button onclick="addStudents()">إضافة</button>
-<div id="studentsList"></div>
-</div>
-</div>
-
-<!-- الدرجات -->
-<div id="grades" class="section">
-<div class="box">
-
-<select id="studentSelect"></select>
-
-<label>اختبار (60)</label>
-<input id="exam" type="number">
-
-<label>مهمات (40)</label>
-<input id="tasks" type="number">
-
-<button onclick="saveGrade()">حفظ</button>
-
-</div>
-</div>
-
-<!-- التقارير -->
-<div id="report" class="section">
-<div class="box">
-<div id="analysis"></div>
-<canvas id="chart"></canvas>
-<button onclick="window.print()">🖨 طباعة</button>
-</div>
+<!-- الطالبات -->
+<div id="students" class="section">
+<textarea id="studentsText" placeholder="كل اسم بسطر"></textarea>
+<button onclick="addStudents()">إضافة جماعي</button>
+<div id="list"></div>
 </div>
 
 <!-- أولياء الأمور -->
 <div id="parents" class="section">
-<div class="box">
-<input id="parentName" placeholder="اسم ولي الأمر">
+<input id="parent">
 <button onclick="addParent()">إضافة</button>
-<div id="parentList"></div>
+<div id="parentsList"></div>
 </div>
+
+<!-- الدرجات -->
+<div id="grades" class="section">
+<select id="studentSelect"></select>
+<input id="exam" placeholder="اختبار 60">
+<input id="tasks" placeholder="مهمات 40">
+<button onclick="save()">حفظ</button>
+</div>
+
+<!-- التحليل -->
+<div id="analysis" class="section">
+<div id="result"></div>
+<canvas id="chart"></canvas>
+</div>
+
+<!-- الخطط -->
+<div id="plans" class="section">
+<div id="planBox"></div>
+</div>
+
+<!-- التقارير -->
+<div id="report" class="section">
+<div id="reportContent"></div>
+<button onclick="generateReport()">تحديث</button>
+<button onclick="window.print()">طباعة</button>
+<button onclick="exportWord()">Word</button>
+</div>
+
+<!-- التكريم -->
+<div id="honor" class="section">
+<div id="honorList"></div>
+</div>
+
+<!-- الأرشيف -->
+<div id="archive" class="section">
+<button onclick="saveArchive()">حفظ</button>
+<div id="archiveList"></div>
 </div>
 
 <!-- الألعاب -->
 <div id="games" class="section">
-<div class="box">
 <a href="https://wordwall.net" target="_blank">Wordwall</a><br>
-<a href="https://kahoot.com" target="_blank">Kahoot</a>
-</div>
+<a href="https://quizizz.com" target="_blank">Quizizz</a>
 </div>
 
 <!-- المصادر -->
 <div id="sources" class="section">
-<div class="box">
-<a href="https://www.ien.edu.sa" target="_blank">عين</a><br>
+<a href="https://ien.edu.sa" target="_blank">عين</a><br>
 <a href="https://noor.moe.gov.sa" target="_blank">نور</a>
-</div>
-</div>
-
 </div>
 
 <script>
 
+// تنقل
 function go(x){
 document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
 document.getElementById(x).classList.add('active');
 }
 
-function toggleMode(){
-document.body.classList.toggle("dark");
-}
+// وضع ليلي
+function toggle(){document.body.classList.toggle("dark");}
 
-let classes=[];
-let students=[];
-let parents=[];
-let grades=[];
+// بيانات
+let classes=[],students=[],parents=[],grades=[];
 
+// ===== الفصول =====
 function addClass(){
 classes.push(className.value);
-render();
+classList.innerHTML=classes.join("<br>");
 }
 
+// ===== الطالبات =====
 function addStudents(){
-students = students.concat(
-document.getElementById("studentsText").value.split("\n")
-);
-render();
+students=students.concat(studentsText.value.split("\n"));
+list.innerHTML=students.join("<br>");
+studentSelect.innerHTML=students.map(s=>"<option>"+s+"</option>").join("");
 }
 
+// ===== أولياء الأمور =====
 function addParent(){
-parents.push(parentName.value);
-render();
+parents.push(parent.value);
+parentsList.innerHTML=parents.join("<br>");
 }
 
-function saveGrade(){
-let exam=parseFloat(document.getElementById("exam").value)||0;
-let tasks=parseFloat(document.getElementById("tasks").value)||0;
-let total=exam+tasks;
+// ===== PDF =====
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+async function pdf(input){
+let file=input.files[0];
+let reader=new FileReader();
+
+reader.onload=async function(){
+let pdf=await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
+let text="";
+for(let i=1;i<=pdf.numPages;i++){
+let p=await pdf.getPage(i);
+let t=await p.getTextContent();
+text+=t.items.map(x=>x.str).join(" ");
+}
+let match=text.match(/(أن\s\w+[^.]{10,50})/g);
+skills.innerHTML=(match||[]).join("<br>");
+};
+
+reader.readAsArrayBuffer(file);
+}
+
+// ===== الدرجات =====
+function save(){
+let total=(+exam.value||0)+(+tasks.value||0);
 grades.push(total);
-updateReport();
+analyze();
 }
 
-function updateReport(){
+// ===== التحليل =====
+function analyze(){
 let avg=grades.reduce((a,b)=>a+b,0)/(grades.length||1);
 
-let level="";
-if(avg>=85) level="فوق المتوسط";
-else if(avg>=60) level="ضمن المتوسط";
-else level="دون المتوسط";
+let level= avg>=85?"فوق المتوسط": avg>=60?"ضمن المتوسط":"فاقد";
 
-document.getElementById("analysis").innerHTML=
-"المتوسط: "+avg.toFixed(1)+"<br>"+level;
+result.innerHTML="المتوسط: "+avg.toFixed(1)+"<br>"+level;
 
-if(window.chart) chart.destroy();
-
-chart=new Chart(document.getElementById("chart"),{
-type:'bar',
-data:{labels:["المتوسط"],datasets:[{data:[avg]}]}
-});
+plan(level);
+honor();
+draw(avg);
 }
 
-function render(){
+// ===== الخطط =====
+function plan(level){
+planBox.innerHTML= level=="فاقد"?"خطة علاجية":
+level=="ضمن المتوسط"?"تعزيز":"إثرائية";
+}
 
-document.getElementById("classList").innerHTML=classes.join("<br>");
-document.getElementById("studentsList").innerHTML=students.join("<br>");
-document.getElementById("parentList").innerHTML=parents.join("<br>");
+// ===== التكريم =====
+function honor(){
+honorList.innerHTML=students.filter((s,i)=>grades[i]>=90).join("<br>");
+}
 
-document.getElementById("studentSelect").innerHTML=
-students.map(s=>"<option>"+s+"</option>").join("");
+// ===== رسم =====
+let chart;
+function draw(avg){
+if(chart) chart.destroy();
+chart=new Chart(chart,{type:'bar',data:{labels:["المتوسط"],datasets:[{data:[avg]}]}});
+}
 
-document.getElementById("c_students").innerHTML=students.length+"<br>عدد الطالبات";
-document.getElementById("c_classes").innerHTML=classes.length+"<br>عدد الفصول";
-document.getElementById("c_parents").innerHTML=parents.length+"<br>أولياء الأمور";
+// ===== تقارير =====
+function generateReport(){
+reportContent.innerHTML=`
+المدرسة: ${school.value}<br>
+المعلمة: ${teacher.value}<br>
+المادة: ${subject.value}<br>
+`;
+}
+
+function exportWord(){
+let blob=new Blob([reportContent.innerHTML],{type:"application/msword"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="report.doc";
+a.click();
+}
+
+// ===== أرشيف =====
+function saveArchive(){
+let a=JSON.parse(localStorage.getItem("arc")||"[]");
+a.push(new Date().toLocaleString());
+localStorage.setItem("arc",JSON.stringify(a));
+archiveList.innerHTML=a.join("<br>");
 }
 
 </script>
 
 </body>
 </html>
-<!-- update -->
